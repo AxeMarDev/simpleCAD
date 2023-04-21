@@ -808,9 +808,7 @@ struct canvasView: View{
                                             
                                             structure.walls.append(Vertex( x: (xVal - 2500), y: ((yVal - 2500 ) * -1)))
                                             
-                                            print("x: \(structure.walls[structure.walls.count - 1].x )")
-                                            print("y: \( structure.walls[structure.walls.count - 1].y )")
-                                            
+                                       
                                             started = true
                                         } else {
                                             var xVal:CGFloat = value.x
@@ -824,9 +822,7 @@ struct canvasView: View{
                                             
                                             structure.walls.append(Vertex( x: (xVal - 2500), y: ((yVal - 2500 ) * -1)))
                                             
-                                            print("x: \(structure.walls[structure.walls.count - 1].x )")
-                                            print("y: \( structure.walls[structure.walls.count - 1].y )")
-                                            print("size: \(structure.walls.count)")
+                                         
                                         }
                                         
                                     }
@@ -855,10 +851,6 @@ struct canvasView: View{
                         
                     }
                 }
-
-               
-                    
-               
             }
             .frame(maxWidth: .infinity)
             .frame(maxHeight: .infinity)
@@ -939,6 +931,7 @@ struct vertexPathMaker: View{
                         
             }
             
+            
             // inner guide line
             Path{ path in
                 
@@ -951,7 +944,6 @@ struct vertexPathMaker: View{
                         
                         path.addLine(to: CGPoint(x: origin.x + structure.walls[i].x ,
                                                  y: origin.y + structure.walls[i].y * -1))
-                        print("hello")
                         
                     }
                     
@@ -960,11 +952,11 @@ struct vertexPathMaker: View{
                
                 //path.closeSubpath()
             }
-            .stroke(Color.white.opacity(0.2), lineWidth: 1)
+            .stroke(Color.white.opacity(1), lineWidth: 1)
             .zIndex(0.2)
 
-        
-  
+            // unline
+            
             
             // wall pathing
             Path { path in
@@ -982,49 +974,32 @@ struct vertexPathMaker: View{
                                                                                                     lfy: structure.walls[1].y ,
                                                                                                     axis: "y", A: 10) ))
                     
-                    path.addLine(   to: CGPoint(x: origin.x + structure.walls[1].x + getOffset(lix: structure.walls[0].x ,
-                                                                                            lfx: structure.walls[1].x,
-                                                                                            liy: structure.walls[0].y ,
-                                                                                            lfy: structure.walls[1].y,
-                                                                                            axis: "x", A: 10),
-                                             y: origin.y + (structure.walls[1].y * -1) +  getOffset(lix: structure.walls[0].x ,
-                                                                                                    lfx: structure.walls[1].x,
-                                                                                                    liy: structure.walls[0].y ,
-                                                                                                    lfy: structure.walls[1].y ,
-                                                                                                    axis: "y", A: 10) ))
                     for i in 1..<structure.walls.count{
                         
-                        if structure.walls.count > i+1{
+                        if structure.walls.count > i+1{ // if there is a next node
                             
-                            print(" available node: \(i)")
                             
                             // this will be calculated with before index
-                            path.addLine(   to: CGPoint(x: origin.x + structure.walls[i].x + getOffset(lix: structure.walls[i].x ,
+                            path.addLine(   to: CGPoint(x: origin.x + structure.walls[i].x + getOffsetEnhanced(lix: structure.walls[i].x ,
                                                                                                        lfx: structure.walls[i+1].x,
                                                                                                        liy: structure.walls[i].y ,
                                                                                                        lfy: structure.walls[i+1].y ,
-                                                                                                       axis: "x", A: 10),
-                                                     y: origin.y + (structure.walls[i].y * -1) + getOffset(lix: structure.walls[i].x ,
+                                                                                                               axis: "x",
+                                                                                                               A: 10,
+                                                                                                               prevX: structure.walls[i-1].x,
+                                                                                                               prevY: structure.walls[i-1].y, index: i
+                                                                                                              ),
+                                                     y: origin.y + (structure.walls[i].y * -1) + getOffsetEnhanced(lix: structure.walls[i].x ,
                                                                                                            lfx: structure.walls[i+1].x,
                                                                                                            liy: structure.walls[i].y ,
                                                                                                            lfy: structure.walls[i+1].y ,
-                                                                                                           axis: "y", A: 10))) // avacado
-                            
-                            
-                            
-                            path.addLine(   to: CGPoint(x: origin.x + structure.walls[i+1].x + getOffset(lix: structure.walls[i].x ,
-                                                                                                             lfx: structure.walls[i+1].x,
-                                                                                                             liy: structure.walls[i].y ,
-                                                                                                             lfy: structure.walls[i+1].y ,
-                                                                                                             axis: "x", A: 10),
-                                                         y: origin.y + (structure.walls[i+1].y * -1) + getOffset(lix: structure.walls[i].x ,
-                                                                                                                 lfx: structure.walls[i+1].x,
-                                                                                                                 liy: structure.walls[i].y ,
-                                                                                                                 lfy: structure.walls[i+1].y ,
-                                                                                                                 axis: "y", A: 10)))
+                                                                                                           axis: "y",
+                                                                                                                   A: 10,
+                                                                                                                   prevX: structure.walls[i-1].x,
+                                                                                                                   prevY: structure.walls[i-1].y, index: i
+                                                                                                                  ))) // avacado
                             
                         } else {
-                            print(" last node: \(i)")
                             
                             path.addLine(   to: CGPoint(x: origin.x + structure.walls[i].x,
                                                      y: origin.y + (structure.walls[i].y * -1)))
@@ -1032,9 +1007,9 @@ struct vertexPathMaker: View{
                     }
                 }
             }
-            .stroke(Color.white, lineWidth: 1)
+            .stroke(Color.white.opacity(0.4), lineWidth: 1)
             .zIndex(1)
-            
+            // wall pathing
             Path { path in
                 
                 if structure.walls.count > 1{
@@ -1044,62 +1019,486 @@ struct vertexPathMaker: View{
                                                                                             liy: structure.walls[0].y ,
                                                                                             lfy: structure.walls[1].y,
                                                                                             axis: "x", A: 10),
-                                             y: origin.y + (structure.walls[0].y * -1) -  getOffset(lix: structure.walls[0].x ,
+                                             y: origin.y + (structure.walls[0].y * -1) - getOffset(lix: structure.walls[0].x ,
                                                                                                     lfx: structure.walls[1].x,
                                                                                                     liy: structure.walls[0].y ,
                                                                                                     lfy: structure.walls[1].y ,
                                                                                                     axis: "y", A: 10) ))
                     
-                    path.addLine(   to: CGPoint(x: origin.x + structure.walls[1].x - getOffset(lix: structure.walls[0].x ,
-                                                                                            lfx: structure.walls[1].x,
-                                                                                            liy: structure.walls[0].y ,
-                                                                                            lfy: structure.walls[1].y,
-                                                                                            axis: "x", A: 10),
-                                             y: origin.y + (structure.walls[1].y * -1) -  getOffset(lix: structure.walls[0].x ,
-                                                                                                    lfx: structure.walls[1].x,
-                                                                                                    liy: structure.walls[0].y ,
-                                                                                                    lfy: structure.walls[1].y ,
-                                                                                                    axis: "y", A: 10) ))
                     for i in 1..<structure.walls.count{
                         
-                        if structure.walls.count > i+1{
+                        if structure.walls.count > i+1{ // if there is a next node
                             
-                        
-                            path.addLine(   to: CGPoint(x: origin.x + structure.walls[i].x - getOffset(lix: structure.walls[i].x ,
+                            
+                            // this will be calculated with before index
+                            path.addLine(   to: CGPoint(x: origin.x + structure.walls[i].x - getOffsetEnhanced(lix: structure.walls[i].x ,
                                                                                                        lfx: structure.walls[i+1].x,
                                                                                                        liy: structure.walls[i].y ,
                                                                                                        lfy: structure.walls[i+1].y ,
-                                                                                                       axis: "x", A: 10),
-                                                     y: origin.y + (structure.walls[i].y * -1) - getOffset(lix: structure.walls[i].x ,
+                                                                                                               axis: "x",
+                                                                                                               A: 10,
+                                                                                                               prevX: structure.walls[i-1].x,
+                                                                                                               prevY: structure.walls[i-1].y, index: -1
+                                                                                                              ),
+                                                     y: origin.y + (structure.walls[i].y * -1) - getOffsetEnhanced(lix: structure.walls[i].x ,
                                                                                                            lfx: structure.walls[i+1].x,
                                                                                                            liy: structure.walls[i].y ,
                                                                                                            lfy: structure.walls[i+1].y ,
-                                                                                                           axis: "y", A: 10))) // avacado
+                                                                                                           axis: "y",
+                                                                                                                   A: 10,
+                                                                                                                   prevX: structure.walls[i-1].x,
+                                                                                                                   prevY: structure.walls[i-1].y, index: -1
+                                                                                                                  ))) // avacado
                             
-                            path.addLine(   to: CGPoint(x: origin.x + structure.walls[i+1].x - getOffset(lix: structure.walls[i].x ,
-                                                                                                         lfx: structure.walls[i+1].x,
-                                                                                                         liy: structure.walls[i].y ,
-                                                                                                         lfy: structure.walls[i+1].y ,
-                                                                                                         axis: "x", A: 10),
-                                                     y: origin.y + (structure.walls[i+1].y * -1) - getOffset(lix: structure.walls[i].x ,
-                                                                                                             lfx: structure.walls[i+1].x,
-                                                                                                             liy: structure.walls[i].y ,
-                                                                                                             lfy: structure.walls[i+1].y ,
-                                                                                                             axis: "y", A: 10)))
-    
                         } else {
+                            
                             path.addLine(   to: CGPoint(x: origin.x + structure.walls[i].x,
                                                      y: origin.y + (structure.walls[i].y * -1)))
                         }
                     }
                 }
             }
-            .stroke(Color.white, lineWidth: 1)
+            .stroke(Color.white.opacity(0.4), lineWidth: 1)
             .zIndex(1)
+            
+            ForEach(0..<structure.walls.count, id: \.self) { i in
+                
+                if i > 0 && i < structure.walls.count-1{
+                    
+                    let xVal:CGFloat = getAngle( i: i, structure: structure , axis: "x")
+                    let yVal:CGFloat = getAngle( i: i, structure: structure , axis: "y")
+                    
+                    Path { path in
+                        path.move(   to: CGPoint(x: origin.x + structure.walls[i].x + xVal,
+                                                 y: origin.y + (structure.walls[i].y * -1) + yVal ))
+                        
+                        path.addLine(   to: CGPoint(x: origin.x + structure.walls[i].x, // - xVal,
+                                                 y: origin.y + (structure.walls[i].y * -1)))// - yVal ))
+                        
+                    }
+                    .stroke(Color.pink.opacity(1), lineWidth: 2)
+                    
+                    if i == structure.walls.count-2{
+                        Rectangle()
+                            .frame(width: 60, height: 1)
+                            .foregroundColor(Color.white)
+                            .position(x: origin.x + structure.walls[i].x ,
+                                      y: origin.y + structure.walls[i].y * -1 - 30 )
+                        
+                        Rectangle()
+                            .frame(width: 60, height: 1)
+                            .foregroundColor(Color.white)
+                            .position(x: origin.x + structure.walls[i].x ,
+                                      y: origin.y + structure.walls[i].y * -1 + 30 )
+                        
+                        Rectangle()
+                            .frame(width: 1, height: 60)
+                            .foregroundColor(Color.white)
+                            .position(x: origin.x + structure.walls[i].x - 30 ,
+                                      y: origin.y + structure.walls[i].y * -1  )
+                        
+                        Rectangle()
+                            .frame(width: 1, height: 60)
+                            .foregroundColor(Color.white)
+                            .position(x: origin.x + structure.walls[i].x + 30,
+                                      y: origin.y + structure.walls[i].y * -1  )
+                    }
+                }
+            }
+            
+            
+            ForEach(0..<structure.walls.count, id: \.self) { i in
+               
+                ZStack{
+                    if i > 0 && i < structure.walls.count-1{
+                        
+                        let quadrant:Int = getQuadrant(lix: structure.walls[i-1].x , lfx: structure.walls[i].x, liy: structure.walls[i-1].y * -1, lfy: structure.walls[i].y * -1)
+
+                        
+                
+                        if quadrant == 3{
+                            
+                            Rectangle()
+                                .frame(width: 10, height: 10)
+                                .foregroundColor(Color.green)
+                                .position(x: origin.x + structure.walls[i].x - 5,
+                                          y: origin.y + structure.walls[i].y * -1 - 5 )
                            
-                //path.closeSubpath()
+                            Rectangle()
+                            
+                                .frame(width: 30, height: 30)
+                                .foregroundColor(Color.green.opacity(0.2))
+                                .position(x: origin.x + structure.walls[i].x - 15,
+                                          y: origin.y + structure.walls[i].y * -1 - 15 )
+                        } else  if quadrant == 4 {
+                            
+                            Rectangle()
+                                .frame(width: 10, height: 10)
+                                .foregroundColor(Color.green)
+                                .position(x: origin.x + structure.walls[i].x + 5,
+                                          y: origin.y + structure.walls[i].y * -1  - 5)
+                            
+                            Rectangle()
+                            
+                                .frame(width: 30, height: 30)
+                                .foregroundColor(Color.green.opacity(0.2))
+                                .position(x: origin.x + structure.walls[i].x + 15,
+                                          y: origin.y + structure.walls[i].y * -1  - 15)
+                        } else  if quadrant == 1 {
+                            
+                            Rectangle()
+                                .frame(width: 10, height: 10)
+                                .foregroundColor(Color.green)
+                                .position(x: origin.x + structure.walls[i].x + 5,
+                                          y: origin.y + structure.walls[i].y * -1 + 5)
+                           
+                            Rectangle()
+                            
+                                .frame(width: 30, height: 30)
+                                .foregroundColor(Color.green.opacity(0.2))
+                                .position(x: origin.x + structure.walls[i].x + 15,
+                                          y: origin.y + structure.walls[i].y * -1 + 15)
+                        } else  if quadrant == 2 {
+                            
+                            Rectangle()
+                                .frame(width: 10, height: 10)
+                                .foregroundColor(Color.green)
+                                .position(x: origin.x + structure.walls[i].x - 5,
+                                          y: origin.y + structure.walls[i].y * -1 + 5)
+                            
+                            Rectangle()
+                 
+                                .frame(width: 30, height: 30)
+                                .foregroundColor(Color.green.opacity(0.2))
+                                .position(x: origin.x + structure.walls[i].x - 15,
+                                          y: origin.y + structure.walls[i].y * -1 + 15)
+                        }
+                      
+                    }
+                }
+                
+                ZStack{
+                    if i > 0 && i < structure.walls.count-1{
+                        
+                       
+                        
+                        let quadrant:Int = getQuadrant(lix: structure.walls[i].x , lfx: structure.walls[i+1].x, liy: structure.walls[i].y * -1, lfy: structure.walls[i+1].y  * -1 )
+                        
+                        if quadrant == 1 {
+                            
+                            Rectangle()
+                                .frame(width: 10, height: 10)
+                                .foregroundColor(Color.orange)
+                                .position(x: origin.x + structure.walls[i].x - 25,
+                                          y: origin.y + structure.walls[i].y * -1 - 25 )
+                           
+                            Rectangle()
+                            
+                                .frame(width: 30, height: 30)
+                                .foregroundColor(Color.orange.opacity(0.2))
+                                .position(x: origin.x + structure.walls[i].x - 15,
+                                          y: origin.y + structure.walls[i].y * -1 - 15 )
+                        } else  if quadrant == 2 {
+                            
+                            Rectangle()
+                                .frame(width: 10, height: 10)
+                                .foregroundColor(Color.orange)
+                                .position(x: origin.x + structure.walls[i].x + 25,
+                                          y: origin.y + structure.walls[i].y * -1  - 25)
+                            
+                            Rectangle()
+                            
+                                .frame(width: 30, height: 30)
+                                .foregroundColor(Color.orange.opacity(0.2))
+                                .position(x: origin.x + structure.walls[i].x + 15,
+                                          y: origin.y + structure.walls[i].y * -1  - 15)
+                        } else  if quadrant == 3 {
+                            
+                            Rectangle()
+                                .frame(width: 10, height: 10)
+                                .foregroundColor(Color.orange)
+                                .position(x: origin.x + structure.walls[i].x + 25,
+                                          y: origin.y + structure.walls[i].y * -1 + 25)
+                           
+                            Rectangle()
+                            
+                                .frame(width: 30, height: 30)
+                                .foregroundColor(Color.orange.opacity(0.2))
+                                .position(x: origin.x + structure.walls[i].x + 15,
+                                          y: origin.y + structure.walls[i].y * -1 + 15)
+                        } else  if quadrant == 4 {
+                            
+                            Rectangle()
+                                .frame(width: 10, height: 10)
+                                .foregroundColor(Color.orange)
+                                .position(x: origin.x + structure.walls[i].x - 25,
+                                          y: origin.y + structure.walls[i].y * -1 + 25)
+                            
+                            Rectangle()
+                 
+                                .frame(width: 30, height: 30)
+                                .foregroundColor(Color.orange.opacity(0.2))
+                                .position(x: origin.x + structure.walls[i].x - 15,
+                                          y: origin.y + structure.walls[i].y * -1 + 15)
+                        }
+                        /*
+                        if quadrant == 1 {
+                            
+                            Rectangle()
+                            
+                                .frame(width: 30, height: 30)
+                                .foregroundColor(Color.orange.opacity(0.2))
+                                .position(x: origin.x + structure.walls[i].x - 15,
+                                          y: origin.y + structure.walls[i].y * -1 - 15 )
+                        } else  if quadrant == 2 {
+                            
+                            Rectangle()
+                            
+                                .frame(width: 30, height: 30)
+                                .foregroundColor(Color.orange.opacity(0.2))
+                                .position(x: origin.x + structure.walls[i].x + 15,
+                                          y: origin.y + structure.walls[i].y * -1  - 15)
+                        } else  if quadrant == 3 {
+                            
+                            Rectangle()
+                            
+                                .frame(width: 30, height: 30)
+                                .foregroundColor(Color.orange.opacity(0.2))
+                                .position(x: origin.x + structure.walls[i].x + 15,
+                                          y: origin.y + structure.walls[i].y * -1 + 15)
+                        } else  if quadrant == 4 {
+                          
+                            Rectangle()
+                 
+                                .frame(width: 30, height: 30)
+                                .foregroundColor(Color.orange.opacity(0.2))
+                                .position(x: origin.x + structure.walls[i].x - 15,
+                                          y: origin.y + structure.walls[i].y * -1 + 15)
+                        }
+                      */
+                    }
+                }
+
+                ZStack{
+                    Rectangle()
+                        .frame(width: 1, height: 50)
+                        .foregroundColor(Color.blue.opacity(1))
+                    Rectangle()
+                        .frame(width: 50, height: 1)
+                        .foregroundColor(Color.red.opacity(1))
+                }
+                .position(x: origin.x + structure.walls[i].x,
+                          y: origin.y + structure.walls[i].y * -1 )
+            }
+
+
         }
     
+    }
+    
+    func getAngle( i:Int, structure:StructureVertex, axis:String) -> CGFloat {
+        
+       
+        // next vertex
+        let lfx:CGFloat = structure.walls[i+1].x
+        let lfy:CGFloat = structure.walls[i+1].y * -1
+        // current vertex
+        let lix:CGFloat = structure.walls[i].x
+        let liy:CGFloat = structure.walls[i].y * -1
+        // previous vertex
+        let lxPrev:CGFloat = structure.walls[i-1].x
+        let lyPrev:CGFloat = structure.walls[i-1].y * -1
+
+        let quadrantPrev:Int = getQuadrant(lix: structure.walls[i-1].x , lfx: structure.walls[i].x, liy: structure.walls[i-1].y * -1, lfy: structure.walls[i].y * -1)
+        let quadrantNext:Int = getQuadrant(lix: structure.walls[i].x , lfx: structure.walls[i+1].x, liy: structure.walls[i].y * -1, lfy: structure.walls[i+1].y  * -1 )
+        
+        /*
+        print( "        previous x: \(lxPrev)")
+        print( "        previous y: \(lyPrev)")
+        print( "        current x: \(lix)")
+        print( "        current y: \(liy)")
+        print( "        next x: \(lfx)")
+        print( "        next y: \(lfy)")
+        print( "        Quad prec: \(quadrantPrev)")
+        print( "        Quad next: \(quadrantNext)")
+        */
+        var xOffset:CGFloat
+        var yOffset:CGFloat
+        var angle:CGFloat = 0
+        
+        if (quadrantPrev == 3 && quadrantNext == 4) || quadrantPrev == 2 && quadrantNext == 1  {
+            
+            //( atan(fraction ) * 180 ) / Double.pi
+            let fractionPrev:CGFloat = (abs(lyPrev - liy)/abs(lxPrev - lix))
+            let thetaPrev:CGFloat =  ( atan( fractionPrev ) * 180 / Double.pi )
+            let fractionNext:CGFloat = (abs(liy - lfy)/abs(lix - lfx))
+            let thetaNext:CGFloat = 90 - (( atan( fractionNext ) * 180) / Double.pi)
+            
+ 
+            angle = (360 - ( 180 + ( 90 - thetaPrev) + ( thetaNext ) )) / 2
+           
+            if (90 - thetaNext) > thetaPrev {
+                angle = angle - thetaPrev
+                yOffset = sin( (angle * Double.pi) / 180 ) * 60
+                
+            } else {
+                angle = angle - (90 - thetaNext)
+                yOffset = (sin( (angle * Double.pi) / 180 ) * 60)  * -1
+
+            }
+            
+            xOffset = (cos( (angle * Double.pi) / 180 ) * 60) * -1
+            
+            if quadrantPrev == 3 {
+                if axis == "x" {
+                    return xOffset
+                    
+                } else {
+                    return yOffset
+                }
+                
+            } else {
+                if axis == "x" {
+                    return xOffset * -1
+                    
+                } else {
+                    return yOffset
+                }
+            }
+            
+            
+        } else if  quadrantPrev == 3 && quadrantNext == 2 || quadrantPrev == 4 && quadrantNext == 1{
+            
+            
+            //( atan(fraction ) * 180 ) / Double.pi
+            let fractionPrev:CGFloat = (abs(lyPrev - liy)/abs(lxPrev - lix))
+            let thetaPrev:CGFloat =  ( atan( fractionPrev ) * 180 / Double.pi )
+            let fractionNext:CGFloat = (abs(liy - lfy)/abs(lix - lfx))
+            let thetaNext:CGFloat =  (( atan( fractionNext ) * 180) / Double.pi)
+            
+ 
+            angle = (360 - ( 180 + (  thetaPrev) + ( thetaNext ) )) / 2
+            print ("----------------------------------------")
+            print(" previous tan inner angle: \( 90 - thetaPrev)")
+            print(" current tan inner angle: \( 90 -  thetaNext)")
+            print(" previous tan outer angle: \( thetaPrev)")
+            print(" current tan ouuter angle: \(  thetaNext )")
+           
+           
+            if  90 - thetaNext >  90 - thetaPrev {
+                angle = angle - (90 - thetaPrev)
+                xOffset = sin( (angle * Double.pi) / 180 ) * 60
+                
+            } else {
+                angle = angle - (90 - thetaNext)
+                xOffset = (sin( (angle * Double.pi) / 180 ) * 60)  * -1
+
+            }
+            
+            yOffset = (cos( (angle * Double.pi) / 180 ) * 60) * -1
+            
+            if quadrantPrev == 3 {
+                if axis == "x" {
+                    return xOffset
+                    
+                } else {
+                    return yOffset
+                }
+            } else {
+                if axis == "x" {
+                    return xOffset
+                    
+                } else {
+                    return yOffset  * -1 
+                }
+            }
+            
+            
+        
+           
+        } else  if quadrantPrev == 2 && quadrantNext == 3 {
+           
+        //} else if  {
+            
+            
+        } else  if  (quadrantPrev == 4 && quadrantNext == 3){
+            
+        //} else if   {
+            
+        } else  if quadrantPrev == 1 && quadrantNext == 4 {
+            
+        } else if  quadrantPrev == 1 && quadrantNext == 1 {
+            
+        } else {
+            
+        }
+        
+        
+        return 0
+        
+        
+    }
+    
+    func getQuadrant(  lix:CGFloat, lfx:CGFloat, liy:CGFloat, lfy:CGFloat) -> Int{
+        
+       
+        
+        var axisX:Int = 0
+        var axisY:Int = 0
+        
+        if lix < 0 { // quadrant 1 & 4
+            if lfx > 0 {
+                axisX = 1
+            } else if lfx < 0 {
+                if lfx > lix {
+                    axisX = 1
+                } else {
+                    axisX = 0
+                }
+            }
+        } else if lix > 0 { // quadrant 2 & 3
+            if lfx < 0 {
+                axisX = 0
+            } else if lfx > 0 {
+                if lfx > lix {
+                    axisX = 1
+                } else {
+                    axisX = 0
+                }
+            }
+        }
+         
+        if liy < 0 { // quadrant 1 & 2
+            if lfy > 0 {
+                axisY = 1
+            } else if lfy < 0 {
+                if lfy > liy {
+                    axisY = 1
+                } else {
+                    axisY = 0
+                }
+            }
+        } else if liy > 0 { // quadrant 3 & 4
+            if lfy < 0 {
+                axisY = 0
+            } else if lfy > 0 {
+                if lfy > liy {
+                    axisY = 1
+                } else {
+                    axisY = 0
+                }
+            }
+        }
+        
+        if axisX == 1 && axisY == 1{
+            return 3
+        } else if axisX == 1 && axisY == 0{
+            return 2
+        } else if axisX == 0 && axisY == 1{
+            return 4
+        } else {
+            return 1
+        }
     }
     
     func getOffset( lix:CGFloat, lfx:CGFloat, liy:CGFloat, lfy:CGFloat,
@@ -1295,8 +1694,245 @@ struct vertexPathMaker: View{
         
     }
     
+    struct packageWH {
+        
+        var width:CGFloat
+        var axisX:Int
+
+        var hieght:CGFloat
+        var axisY:Int
+        
+        init( width: CGFloat, axisX: Int, hieght: CGFloat, axisY: Int) {
+            self.width = width
+            self.axisX = axisX
+            self.hieght = hieght
+            self.axisY = axisY
+        }
+    }
     
+    func getWidthAndHieght( lixi:CGFloat, lfxi:CGFloat, liyi:CGFloat, lfyi:CGFloat ) -> packageWH{
+        
+        let lix:CGFloat = lixi
+        let lfx:CGFloat = lfxi
+        var width:CGFloat
+        var axisX:Int = 1
+        
+        let liy:CGFloat = liyi
+        let lfy:CGFloat = lfyi
+        var hieght:CGFloat
+        var axisY:Int = 1
+       
+        
+        if lix < 0 {
+            if lfx > 0 {
+                width = lfx + abs(lix)
+                axisX = 1
+            } else if lfx < 0 {
+                width = abs(lix - lfx)
+                if lfx > lix {
+                    axisX = 1
+                } else {
+                    axisX = 0
+                }
+            }else {
+                width = 0
+            }
+        } else if lix > 0 {
+            if lfx < 0 {
+                width = abs(lfx) + lix
+                axisX = 0
+            } else if lfx > 0 {
+                width = abs(lix - lfx)
+                if lfx > lix {
+                    axisX = 1
+                } else {
+                    axisX = 0
+                }
+                
+            }else {
+                width = 0
+            }
+        } else {
+            width = 0
+        }
+        
+        if liy < 0 {
+            if lfy > 0 {
+                hieght = lfy + abs(liy)
+                axisY = 1
+            } else if lfy < 0 {
+                hieght = abs(liy - lfy)
+                if lfy > liy {
+                    axisY = 1
+                } else {
+                    axisY = 0
+                }
+               
+            }else {
+                hieght = 0
+            }
+        } else if liy > 0 {
+            if lfy < 0 {
+                hieght = abs(lfy) + liy
+                axisY = 0
+            } else if lfy > 0 {
+                hieght = abs(liy - lfy)
+                if lfy > liy {
+                    axisY = 1
+                } else {
+                    axisY = 0
+                }
+            }else {
+                hieght = 0
+            }
+        } else {
+            hieght = 0
+        }
+        
+        return packageWH( width: width, axisX: axisX,  hieght: hieght, axisY: axisY)
+    }
+    
+    func getOffsetEnhanced( lix:CGFloat, lfx:CGFloat, liy:CGFloat, lfy:CGFloat,
+                            axis:String , A:CGFloat , prevX:CGFloat, prevY:CGFloat, index:Int)-> CGFloat{
+        
+        
+        // normalize
+        let liyI = abs(liy)
+        let lfyI = abs(lfy)
+        let lixI = abs(lix)
+        let lfxI = abs(lfx)
+        
+        let currentPath:packageWH = getWidthAndHieght( lixi: lix, lfxi: lfx, liyi: liy, lfyi: lfy)
+        
+        let hieght:CGFloat = currentPath.hieght
+        let width:CGFloat  = currentPath.width
+        let axisX:Int =  currentPath.axisX
+        let axisY:Int =  currentPath.axisY
+        
+        let prevPath:packageWH = getWidthAndHieght( lixi: prevX, lfxi: lix, liyi: prevY, lfyi: liy)
+        
+        let hieghtPrev:CGFloat = prevPath.hieght
+        let widthPrev:CGFloat = prevPath.width
+        let axisXPrev:Int = prevPath.axisX
+        let axisYPrev:Int = prevPath.axisY
+        
+        
+        // 1 = point top left
+        // 2 = point top roght
+        // 3 = point bottom right
+        // 4 = point bottom left
+        let quadrantNext:Int = getQuadrant(lix: lix , lfx: lfx, liy: liy * -1, lfy: lfy * -1)
+        let quadrantPrev:Int = getQuadrant(lix: prevX , lfx: lix, liy: prevY * -1, lfy: liy * -1)
+
+        
+        if lfyI - liyI == 0 {
+            
+            if axis == "x"{
+                
+                if lfx - lix  > 0{
+                    return A
+                } else {
+                    return A * -1
+                }
+                
+            } else{
+                return 0.0
+                
+            }
+        } else if lfxI - lixI == 0 {
+            
+            if axis == "y"{
+                
+                if lfyI - liyI > 0{
+                    return A
+                } else {
+                    return A * -1
+                }
+                
+            } else{
+                return 0.0
+                
+            }
+        } else {
+            
+            //oY = wY +/- sin( 90 - arctan( ( abs(Liy - Lfy))/( abs(Lix - Lfx) ) )) * A
+            //oX = wX +/- cos( 90 - arctan( ( abs(Liy - Lfy))/( abs(Lix - Lfx) )  )) * A
+            
+            let fraction:CGFloat = hieght/width
+            let arctan = ( atan(fraction ) * 180 ) / Double.pi
+            let degree = 90 - arctan
+            //print ( "degree: \( degree) ")
+            let cosineCurr:CGFloat = cos( (degree  * Double.pi) / 180 ) * A
+            let sineCurr:CGFloat = sin( (degree  * Double.pi) / 180 ) * A
+            
+            let fractionPrev:CGFloat = hieghtPrev/widthPrev
+            let arctanPrev = ( atan(fractionPrev ) * 180 ) / Double.pi
+            let degreePrev = 90 - arctanPrev
+            //print ( "degree: \( degree) ")
+            let cosinePrev:CGFloat = cos( (degreePrev  * Double.pi) / 180 ) * A
+            let sinePrev:CGFloat = sin( (degreePrev  * Double.pi) / 180 ) * A
+            
+            let bFullLength = sqrt( pow(  abs(cosineCurr - cosinePrev), 2) + pow(abs(sineCurr - sinePrev), 2))
+            let bLength = bFullLength/2
+            
+            let t2theta = ( asin( bLength/A ) * 180) / Double.pi
+            
+            let F1 = cos( (t2theta * Double.pi) / 180 ) * A
+            let F2 = tan( (t2theta * Double.pi) / 180 ) * bLength
+             
+            let fTotal = F1 + F2
+            
+            // cosine = x value
+            // sine = y value
+            let degreeNew = degree - t2theta
+            var cosine = cos( (degreeNew * Double.pi) / 180) * fTotal
+            var sine =   sin( (degreeNew * Double.pi) / 180) * fTotal
+            cosine = abs(cosine)
+            sine = abs(sine)
+            
+            
+            //  left and left
+            
+            
+            if quadrantPrev == 3 && quadrantNext == 4 {
+                cosine = cosine * -1
+                sine = sine * -1 // variable condition
+            } else if  quadrantPrev == 3 && quadrantNext == 2 {
+                cosine = cosine * -1 // variable condition
+                sine = sine * -1
+            } else  if quadrantPrev == 2 && quadrantNext == 3 {
+                cosine = cosine * -1 // variable condition
+            } else if  quadrantPrev == 4 && quadrantNext == 3 {
+                sine = sine * -1 // variable condition
+                
+            } else  if quadrantPrev == 2 && quadrantNext == 1 {
+                sine = sine * -1 // variable condition
+            } else if  quadrantPrev == 4 && quadrantNext == 1 {
+                cosine = cosine * -1 // variable condition
+            } else  if quadrantPrev == 1 && quadrantNext == 4 {
+                cosine = cosine * -1  // variable condition
+                sine = sine * -1
+            } else if  quadrantPrev == 1 && quadrantNext == 1 {
+                cosine = cosine * -1
+                sine = sine * -1 // variable condition
+            } else {
+                cosine = 0
+                sine = 0
+            }
+            
+            if axis == "x"{
+                return cosine
+            } else {
+                return sine
+            }
+ 
+           
+        }
+            
+    }
+        
 }
+    
 
 
 
@@ -1675,13 +2311,16 @@ struct ScrollviewY<Content>: View where Content: View {
 struct Vertex{
     var x:CGFloat
     var y:CGFloat
+    var quadrantIn:Int
+    var quadrantOut:Int
     
     init(x:CGFloat, y: CGFloat){
         self.x = x
         self.y = y
+        quadrantIn = -1
+        quadrantOut = -1
     }
 }
-
 
 struct StructureVertex{
     
