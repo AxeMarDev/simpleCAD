@@ -14,6 +14,7 @@
 		E25B600D29EF30A000C3C0F7 /* allangTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E25B600C29EF30A000C3C0F7 /* allangTests.swift */; };
 		E25B601729EF30A000C3C0F7 /* allangUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E25B601629EF30A000C3C0F7 /* allangUITests.swift */; };
 		E25B601929EF30A000C3C0F7 /* allangUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E25B601829EF30A000C3C0F7 /* allangUITestsLaunchTests.swift */; };
+		E25B602629EF31A300C3C0F7 /* notes.txt in Resources */ = {isa = PBXBuildFile; fileRef = E25B602529EF31A300C3C0F7 /* notes.txt */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -45,6 +46,7 @@
 		E25B601229EF30A000C3C0F7 /* allangUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = allangUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		E25B601629EF30A000C3C0F7 /* allangUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = allangUITests.swift; sourceTree = "<group>"; };
 		E25B601829EF30A000C3C0F7 /* allangUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = allangUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		E25B602529EF31A300C3C0F7 /* notes.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = notes.txt; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -100,6 +102,7 @@
 				E25B5FFE29EF309F00C3C0F7 /* Assets.xcassets */,
 				E25B600329EF309F00C3C0F7 /* allang.entitlements */,
 				E25B600029EF309F00C3C0F7 /* Preview Content */,
+				E25B602529EF31A300C3C0F7 /* notes.txt */,
 			);
 			path = allang;
 			sourceTree = "<group>";
@@ -233,6 +236,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E25B602629EF31A300C3C0F7 /* notes.txt in Resources */,
 				E25B600229EF309F00C3C0F7 /* Preview Assets.xcassets in Resources */,
 				E25B5FFF29EF309F00C3C0F7 /* Assets.xcassets in Resources */,
 			);

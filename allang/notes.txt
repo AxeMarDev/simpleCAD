@@ -1,0 +1,56 @@
+// make plans with code
+
+set unit = m
+
+
+house1 = newHouse()
+house1.offSet( 4f, 6f)
+room1 = newRoom()
+room1.setShape("square")
+room1.wallT(1f)
+room2 = newRoom()
+room1.setShape("square")
+room1.wallT(1f)
+
+newHouse{
+
+    newRoom{
+        newWall{
+        
+        }
+        newWall{
+        
+        }
+        newWall{
+        
+        }
+        newWall{
+        
+        }
+        
+    }
+    
+    newRoom{
+        newWall{
+        
+        }
+    }
+    
+    newRoom{
+        newWall{
+        
+        }
+    }
+    
+}
+
+
+
+
+
+
+
+
+
+house1.addRoom( room1 )
+
